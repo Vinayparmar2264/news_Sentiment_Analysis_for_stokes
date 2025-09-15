@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
 
   const API_BASE_URL = 'http://127.0.0.1:5000';
-  // ... (all other const declarations are the same)
   const analyzeBtn = document.getElementById('analyzeBtn');
   const tickerInput = document.getElementById('tickerInput');
   const loader = document.getElementById('loader');
@@ -186,9 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
   closeModalBtn.addEventListener('click', closeModal);
   articleModal.addEventListener('click', (e) => { if (e.target === articleModal) closeModal(); });
 
-  // fetchGeneralNews and populateTicker can remain the same
   async function fetchGeneralNews() {
-    // ... logic is unchanged
     try {
       const resp = await fetch(`${API_BASE_URL}/general_news`);
       if (!resp.ok) throw new Error('Failed to fetch news');
@@ -201,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function populateTicker(articles) {
-    // ... logic is unchanged
     const container = document.getElementById('ticker-content');
     if (!container) return;
     container.innerHTML = '';
