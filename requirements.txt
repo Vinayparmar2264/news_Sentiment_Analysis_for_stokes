@@ -1,0 +1,8 @@
+flask
+flask-cors
+requests
+newsapi-python
+yfinance
+transformers
+torch
+spacy
