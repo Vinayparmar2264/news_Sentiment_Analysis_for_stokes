@@ -1,1 +1,1 @@
-# news_Sentiment_Analysis_for_stokes
+# news_Sentiment_Analysis_for_stokes:it is the technology works on basicaly sentimetnt anaysis which means if we want to know the nature of  any company's stokes so we can know by analysing the news sentiment.
