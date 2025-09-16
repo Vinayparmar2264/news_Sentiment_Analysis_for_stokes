@@ -80,7 +80,7 @@ body {
     width: 8px;
 }
 .main-content::-webkit-scrollbar-thumb {
-    background: #334155;
+    background: white;
     border-radius: 4px;
 }
 
@@ -210,3 +210,4 @@ body {
         display: none;
     }
 }
+
