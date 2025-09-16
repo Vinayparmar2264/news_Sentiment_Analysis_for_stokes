@@ -139,7 +139,167 @@ body {
 }
 
 /* --- Sentiment Colors --- */
-.sentiment-positive { color: var(--green);
+.sentiment-positive { color: var(--green); } /* green-500 */
+.sentiment-negative { color: var(--red); } /* red-500 */
+.sentiment-neutral { color: var(--orange); } /* neutral orange */
+
+/* --- Stat Cards / Right-main cards --- */
+/* Requirement 2: right main cards white background + slate border; static text inside blue */
+.stat-card,
+.main-content .card {
+    background-color: var(--white); /* white card bg */
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--slate-border); /* slate border */
+    transition: all 0.2s ease;
+}
+
+/* static text inside the right card should be blue */
+.stat-card .static-text,
+.main-content .card .static-text {
+    color: var(--blue);
+    font-weight: 600;
+}
+
+/* --- NEW: Glow Effects for Sentiment Card (keep as-is but adapt border color if used) --- */
+.glow-positive {
+    border-color: rgba(34, 197, 94, 0.5);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+}
+.glow-negative {
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+}
+
+/* --- Relevant Headline Cards --- */
+/* Requirement 3: white card, slate border, text black bold */
+.headline-card {
+    background-color: var(--white); /* changed to white */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--slate-border); /* slate border */
+    transition: all 0.2s ease-out;
+}
+.headline-card:hover {
+    transform: translateY(-3px);
+    border-color: #718096; /* slightly darker on hover */
+    /* keep bg white on hover */
+}
+
+/* headline text inside should be black and bold */
+.headline-card .headline,
+.headline-card .headline-text {
+    color: var(--black);
+    font-weight: 700;
+    margin: 0;
+}
+
+/* --- Impact button & Impact card --- */
+/* Requirement 4: impact button color blue */
+.impact-btn {
+    background-color: var(--blue);
+    color: var(--white);
+    transition: background-color 0.2s, color 0.2s;
+    border: none;
+    padding: 0.45rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.impact-btn:hover {
+    background-color: #0f76d6;
+    color: var(--white);
+}
+
+/* Impact card: keep a subtle container but we will add specific badge for the words */
+.impact-card {
+    background-color: transparent; /* keep container neutral */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 3px solid #475569; /* default border */
+}
+
+/* positive/negative card border overrides (retain) */
+.impact-card.positive { border-color: var(--green); }
+.impact-card.negative { border-color: var(--red); }
+
+/* Badge displayed beneath/around the single-word labels ("positive"/"negative"/"neutral")
+   White background for the badge, colored text for the word. */
+.impact-card .impact-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: var(--white);    /* white background only below the word */
+    margin-right: 0.5rem;
+    font-weight: 400; /* neutral default; overridden below for positive/negative */
+}
+
+/* specific word colors and weights */
+.impact-card .impact-badge.positive {
+    color: var(--green);
+    font-weight: 700; /* bold */
+}
+.impact-card .impact-badge.negative {
+    color: var(--red);
+    font-weight: 700; /* bold */
+}
+.impact-card .impact-badge.neutral {
+    color: var(--orange);
+    font-weight: 600; /* slightly strong but not mandatory */
+}
+
+/* Maintain previous glow behavior for badges or card if desired */
+.impact-card .impact-badge.glow-positive { box-shadow: 0 0 8px rgba(34,197,94,0.12); }
+.impact-card .impact-badge.glow-negative { box-shadow: 0 0 8px rgba(239,68,68,0.12); }
+
+/* --- NEW: Modal Styles (kept but adapted a little) --- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(2, 6, 23, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 50;
+    display: none; /* Controlled by JS */
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background-color: #f3f4f6; /* lighter modal bg */
+    border: 1px solid var(--slate-border);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    width: 100%;
+    max-width: 48rem; /* 768px */
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+    .news-ticker-container {
+        display: none;
+    }
+}
+
+
 
 
 
