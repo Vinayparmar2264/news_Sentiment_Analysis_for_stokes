@@ -1,5 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+:root{
+    --blue: #1e90ff;      /* text / button blue */
+    --slate-border: #94a3b8; /* slate border (slat/slate) */
+    --slate-dark: #334155;
+    --green: #22c55e;     /* positive */
+    --red: #ef4444;       /* negative */
+    --orange: #f97316;    /* neutral */
+    --white: #ffffff;
+    --black: #000000;
+}
+
+/* Global */
 body {
     font-family: 'Inter', sans-serif;
     overflow: hidden;
@@ -19,13 +31,14 @@ body {
     flex-direction: column;
     border-right: 1px solid #1e293b; /* slate-800 */
     overflow: hidden;
+    color: var(--blue); /* left column main text blue */
 }
 
 .ticker-header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: #cbd5e1; /* slate-300 */
+    color: var(--blue); /* header text blue */
     margin-bottom: 1rem;
     flex-shrink: 0;
 }
@@ -48,10 +61,11 @@ body {
     animation-play-state: paused;
 }
 
+/* left column links/text set to blue as requested */
 .ticker-content a {
     display: block;
     padding: 0.75rem 0.5rem;
-    color: #FFFFE0; /* slate-400 */
+    color: var(--blue); /* changed from slate */
     text-decoration: none;
     border-radius: 0.375rem;
     transition: background-color 0.2s, color 0.2s;
@@ -61,8 +75,8 @@ body {
 }
 
 .ticker-content a:hover {
-    background-color: white; /* slate-800 */
-    color: #FFFFE0; /* slate-200 */
+    background-color: var(--white); /* hover background */
+    color: var(--blue); /* keep blue on hover */
 }
 
 @keyframes scroll-up {
@@ -84,17 +98,35 @@ body {
     border-radius: 4px;
 }
 
-/* --- Improved Buttons & Inputs --- */
+/* --- Search row: Analyze button to the right of search input --- */
+/* Assumes HTML has a container with class .search-row around input + button */
+.search-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+.search-row .search-input,
+.search-row input[type="text"],
+.search-row .searchbox {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.search-row .analyze-button,
+.search-row button.analyze-button {
+    margin-left: auto; /* push to the far right */
+}
+
+/* --- Improved Buttons & Inputs (Analyze button styling adjusted to blue) --- */
 .analyze-button {
-    background-image: linear-gradient(to right, #0ea5e9, #2563eb);
-    color: white;
+    background: linear-gradient(to right, var(--blue), #2563eb);
+    color: var(--white);
     font-weight: 600;
-    padding: 0.7rem 2rem;
+    padding: 0.7rem 1rem;
     border-radius: 0.375rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 7rem;
     height: 2.5rem;
     transition: all 0.2s ease;
     border: none;
@@ -107,109 +139,9 @@ body {
 }
 
 /* --- Sentiment Colors --- */
-.sentiment-positive { color: #22c55e; } /* green-500 */
-.sentiment-negative { color: #ef4444; } /* red-500 */
-.sentiment-neutral { color: #94a3b8; } /* slate-400 */
-
-/* --- NEW: Stat Cards --- */
-.stat-card {
-    background-color: #FFFFE0; /* slate-800 */
-    padding: 1rem;
-    border-radius: 0.75rem;
-    border: 1px solid #334155; /* slate-700 */
-    transition: all 0.2s ease;
-}
-
-/* --- NEW: Glow Effects for Sentiment Card --- */
-.glow-positive {
-    border-color: rgba(34, 197, 94, 0.5);
-    box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
-}
-.glow-negative {
-    border-color: rgba(239, 68, 68, 0.5);
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
-}
-
-/* --- NEW: Headline Cards --- */
-.headline-card {
-    background-color: #1e293b;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid #334155;
-    transition: all 0.2s ease-out;
-}
-.headline-card:hover {
-    transform: translateY(-3px);
-    border-color: #475569;
-    background-color: #334155;
-}
-
-.impact-btn {
-    background-color: #334155;
-    color: #cbd5e1;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-.impact-btn:hover {
-    background-color: #475569;
-    color: #fff;
-}
+.sentiment-positive { color: var(--green);
 
 
-/* --- NEW: Modal Styles --- */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(2, 6, 23, 0.8);
-    backdrop-filter: blur(4px);
-    z-index: 50;
-    display: none; /* Controlled by JS */
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    animation: fadeIn 0.3s ease;
-}
-
-.modal-content {
-    background-color: #808080;
-    border: 1px solid #334155;
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    width: 100%;
-    max-width: 48rem; /* 768px */
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    animation: slideIn 0.4s ease;
-}
-
-.impact-card {
-    background-color:#808080;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border-left: 3px solid #475569; /* Default border */
-}
-.impact-card.positive { border-color: #22c55e; }
-.impact-card.negative { border-color: #ef4444; }
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-@keyframes slideIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .main-grid {
-        grid-template-columns: 1fr;
-    }
-    .news-ticker-container {
-        display: none;
-    }
-}
 
 
 
