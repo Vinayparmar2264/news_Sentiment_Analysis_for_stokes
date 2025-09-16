@@ -1,44 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
-:root{
-    --blue: #1e90ff;      /* text / button blue */
-    --slate-border: #94a3b8; /* slate border (slat/slate) */
-    --slate-dark: #334155;
-    --green: #22c55e;     /* positive */
-    --red: #ef4444;       /* negative */
-    --orange: #f97316;    /* neutral */
-    --white: #ffffff;
-    --black: #000000;
-}
-
-/* Global */
 body {
     font-family: 'Inter', sans-serif;
-    overflow: hidden;
+    overflow: hidden; /* Prevent body scrollbars */
 }
 
 .main-grid {
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 300px 1fr; /* Fixed left column, flexible right */
     height: 100vh;
 }
 
-/* --- News Ticker (Left Column) --- */
+/* --- Left Column: News Ticker --- */
 .news-ticker-container {
-    background-color: #020617; /* Even darker slate bg */
+    background-color: #0f172a; /* slate-950 */
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid #1e293b; /* slate-800 */
+    border-right: 1px solid #334155; /* slate-700 */
     overflow: hidden;
-    color: var(--blue); /* left column main text blue */
 }
 
 .ticker-header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: var(--blue); /* header text blue */
+    color: #cbd5e1; /* slate-300 */
     margin-bottom: 1rem;
     flex-shrink: 0;
 }
@@ -47,25 +34,18 @@ body {
     flex-grow: 1;
     overflow: hidden;
     position: relative;
-    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
 }
 
 .ticker-content {
     position: absolute;
     width: 100%;
-    animation: scroll-up 60s linear infinite;
+    animation: scroll-up 40s linear infinite;
 }
 
-.ticker-content:hover {
-    animation-play-state: paused;
-}
-
-/* left column links/text set to blue as requested */
 .ticker-content a {
     display: block;
     padding: 0.75rem 0.5rem;
-    color: var(--blue); /* changed from slate */
+    color: #94a3b8; /* slate-400 */
     text-decoration: none;
     border-radius: 0.375rem;
     transition: background-color 0.2s, color 0.2s;
@@ -75,226 +55,120 @@ body {
 }
 
 .ticker-content a:hover {
-    background-color: var(--white); /* hover background */
-    color: var(--blue); /* keep blue on hover */
+    background-color: #1e293b; /* slate-800 */
+    color: #e2e8f0; /* slate-200 */
 }
 
 @keyframes scroll-up {
     0% { transform: translateY(0); }
-    100% { transform: translateY(-100%); }
+    100% { transform: translateY(-50%); } /* Scrolls exactly one half of the content */
 }
 
-/* --- Main Content (Right Column) --- */
+
+/* --- Right Column: Main Content --- */
 .main-content {
     padding: 2rem;
-    overflow-y: auto;
-}
-
-.main-content::-webkit-scrollbar {
-    width: 8px;
-}
-.main-content::-webkit-scrollbar-thumb {
-    background: black;
-    border-radius: 4px;
-}
-
-/* --- Search row: Analyze button to the right of search input --- */
-/* Assumes HTML has a container with class .search-row around input + button */
-.search-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    width: 100%;
-}
-.search-row .search-input,
-.search-row input[type="text"],
-.search-row .searchbox {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-.search-row .analyze-button,
-.search-row button.analyze-button {
-    margin-left: auto; /* push to the far right */
-}
-
-/* --- Improved Buttons & Inputs (Analyze button styling adjusted to blue) --- */
-.analyze-button {
-    background: linear-gradient(to right, var(--blue), #2563eb);
-    color: var(--white);
-    font-weight: 600;
-    padding: 0.7rem 1rem;
-    border-radius: 0.375rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 2.5rem;
-    transition: all 0.2s ease;
-    border: none;
-    box-shadow: 0 4px 15px -5px rgba(37, 99, 235, 0.5);
-}
-
-.analyze-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px -5px rgba(37, 99, 235, 0.6);
+    overflow-y: auto; /* Allow scrolling only in the main content area */
 }
 
 /* --- Sentiment Colors --- */
-.sentiment-positive { color: var(--green); } /* green-500 */
-.sentiment-negative { color: var(--red); } /* red-500 */
-.sentiment-neutral { color: var(--orange); } /* neutral orange */
+.sentiment-positive { color: #22c55e; } /* UPDATED: Standard Green */
+.sentiment-negative { color: #ef4444; } /* UPDATED: Standard Red */
+.sentiment-neutral { color: #e2e8f0; } /* White/light-slate color for Neutral */
 
-/* --- Stat Cards / Right-main cards --- */
-/* Requirement 2: right main cards white background + slate border; static text inside blue */
-.stat-card,
-.main-content .card {
-    background-color: var(--white); /* white card bg */
-    padding: 1rem;
-    border-radius: 0.75rem;
-    border: 1px solid var(--slate-border); /* slate border */
-    transition: all 0.2s ease;
-}
-
-/* static text inside the right card should be blue */
-.stat-card .static-text,
-.main-content .card .static-text {
-    color: var(--blue);
-    font-weight: 600;
-}
-
-/* --- NEW: Glow Effects for Sentiment Card (keep as-is but adapt border color if used) --- */
-.glow-positive {
-    border-color: rgba(34, 197, 94, 0.5);
-    box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
-}
-.glow-negative {
-    border-color: rgba(239, 68, 68, 0.5);
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
-}
-
-/* --- Relevant Headline Cards --- */
-/* Requirement 3: white card, slate border, text black bold */
 .headline-card {
-    background-color: var(--white); /* changed to white */
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--slate-border); /* slate border */
-    transition: all 0.2s ease-out;
+    background-color: #1e293b; /* slate-800 */
+    transition: background-color 0.2s, transform 0.2s;
 }
+
 .headline-card:hover {
-    transform: translateY(-3px);
-    border-color: #718096; /* slightly darker on hover */
-    /* keep bg white on hover */
+    background-color: #334155; /* slate-700 */
+    transform: translateY(-2px);
 }
 
-/* headline text inside should be black and bold */
-.headline-card .headline,
-.headline-card .headline-text {
-    color: var(--black);
-    font-weight: 700;
-    margin: 0;
-}
-
-/* --- Impact button & Impact card --- */
-/* Requirement 4: impact button color blue */
-.impact-btn {
-    background-color: var(--blue);
-    color: var(--white);
-    transition: background-color 0.2s, color 0.2s;
-    border: none;
-    padding: 0.45rem 0.75rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.impact-btn:hover {
-    background-color: #0f76d6;
-    color: var(--white);
-}
-
-/* Impact card: keep a subtle container but we will add specific badge for the words */
-.impact-card {
-    background-color: transparent; /* keep container neutral */
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border-left: 3px solid #475569; /* default border */
-}
-
-/* positive/negative card border overrides (retain) */
-.impact-card.positive { border-color: var(--green); }
-.impact-card.negative { border-color: var(--red); }
-
-/* Badge displayed beneath/around the single-word labels ("positive"/"negative"/"neutral")
-   White background for the badge, colored text for the word. */
-.impact-card .impact-badge {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    background: var(--white);    /* white background only below the word */
-    margin-right: 0.5rem;
-    font-weight: 400; /* neutral default; overridden below for positive/negative */
-}
-
-/* specific word colors and weights */
-.impact-card .impact-badge.positive {
-    color: var(--green);
-    font-weight: 700; /* bold */
-}
-.impact-card .impact-badge.negative {
-    color: var(--red);
-    font-weight: 700; /* bold */
-}
-.impact-card .impact-badge.neutral {
-    color: var(--orange);
-    font-weight: 600; /* slightly strong but not mandatory */
-}
-
-/* Maintain previous glow behavior for badges or card if desired */
-.impact-card .impact-badge.glow-positive { box-shadow: 0 0 8px rgba(34,197,94,0.12); }
-.impact-card .impact-badge.glow-negative { box-shadow: 0 0 8px rgba(239,68,68,0.12); }
-
-/* --- NEW: Modal Styles (kept but adapted a little) --- */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(2, 6, 23, 0.8);
-    backdrop-filter: blur(4px);
-    z-index: 50;
-    display: none; /* Controlled by JS */
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    animation: fadeIn 0.3s ease;
-}
-
-.modal-content {
-    background-color: #f3f4f6; /* lighter modal bg */
-    border: 1px solid var(--slate-border);
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    width: 100%;
-    max-width: 48rem; /* 768px */
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    animation: slideIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-@keyframes slideIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive Design */
+/* --- Responsive Design --- */
 @media (max-width: 1024px) {
     .main-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Stack columns on smaller screens */
     }
     .news-ticker-container {
-        display: none;
+        display: none; /* Hide the news ticker on smaller screens to save space */
+    }
+    .main-content {
+        height: 100vh;
     }
 }
+/* ===========================
+   Added styles for modal,
+   headline cards, and helpers
+   =========================== */
+
+/* Headline card (used in the new UI for each article) */
+.headline-card {
+  background-color: #0b1220; /* dark card bg */
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: start;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+.headline-card:hover {
+  transform: translateY(-4px);
+  background-color: #0f1726;
+}
+
+/* Modal container (hidden by default) */
+#articleModal { display: none; }
+#articleModal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0,0,0,0.6);
+}
+
+/* Inner modal card (appearance) */
+#articleModal > div {
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #0b1220;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+}
+
+/* Modal text helpers */
+#modalTitle { font-size: 1.15rem; font-weight: 600; color: #e6eef8; }
+#modalSource { color: #94a3b8; font-size: 0.9rem; margin-top: 0.25rem; }
+#modalDescription { color: #cbd5e1; margin-top: 0.75rem; line-height: 1.45; }
+
+/* Impacts list (each company + sentiment) */
+#impacts .impact-item {
+  background: #0f1726;
+  padding: 0.75rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+/* small helper kv label */
+.kv { color: #94a3b8; font-size: 0.9rem; }
+
+/* Make sure modal close button looks nice */
+#closeModal { background: transparent; border: none; cursor: pointer; color: #94a3b8; }
+
+/* Responsive tweaks: modal inner width on small screens */
+@media (max-width: 640px) {
+  #articleModal > div { width: 96%; padding: 1rem; }
+}
+
+/* Small utility to ensure left ticker links look consistent */
+#ticker-content a { display: block; padding: 0.5rem 0; color: #cbd5e1; text-decoration: none; border-radius: 4px; }
+#ticker-content a:hover { background: rgba(255,255,255,0.02); color: #fff; }
