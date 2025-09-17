@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 # Optional libs
 try:
     import spacy
+
     spacy_nlp = spacy.load("en_core_web_sm")
 except (ImportError, OSError):
     logger.warning("spaCy not found or model not downloaded. Keyword extraction will be limited.")
@@ -49,6 +50,7 @@ loaded_models = [MODEL_A, MODEL_B]
 company_to_tickers = {}
 name_index = []
 
+
 def load_tickers_csv(path=TICKERS_CSV):
     global company_to_tickers, name_index
     if not os.path.exists(path):
@@ -68,7 +70,9 @@ def load_tickers_csv(path=TICKERS_CSV):
     except Exception as e:
         logger.exception(f"Failed to load tickers CSV: {e}")
 
+
 load_tickers_csv()
+
 
 @lru_cache(maxsize=512)
 def map_name_to_ticker_from_csv(query_name):
@@ -90,11 +94,13 @@ def map_name_to_ticker_from_csv(query_name):
     if not scored_matches: return None
     scored_matches.sort(key=lambda x: x[1], reverse=True)
     best_match_name, best_score = scored_matches[0]
-    
+
     if best_score >= 0.7:  # Using a confidence threshold
         logger.info(f"CSV search found '{best_match_name}' for query '{query_name}' with score {best_score:.2f}")
         return company_to_tickers[best_match_name.lower()]
     return None
+
+
 # --- END: CSV FALLBACK LOGIC ---
 
 
@@ -121,24 +127,26 @@ def search_ticker_via_api(query):
         logger.error(f"API call to Yahoo Finance search failed: {e}")
         return None
 
+
 def resolve_input_to_ticker(query):
     logger.info(f"Resolving '{query}' using hybrid model (API first).")
-    
+
     # 1. Try the live API first for the most current data
     api_result = search_ticker_via_api(query)
     if api_result:
         logger.info(f"Successfully resolved '{query}' to '{api_result}' via API.")
         return api_result
-    
+
     # 2. If API fails or finds nothing, fall back to the local CSV
     logger.warning(f"API lookup failed for '{query}'. Falling back to local CSV search.")
     csv_result = map_name_to_ticker_from_csv(query)
     if csv_result:
         logger.info(f"Successfully resolved '{query}' to '{csv_result}' via local CSV.")
         return csv_result
-    
+
     logger.error(f"Failed to resolve '{query}' using both API and local CSV.")
     return None
+
 
 # ---------- (The rest of the file is the same) ----------
 @lru_cache(maxsize=128)
@@ -161,6 +169,7 @@ def get_company_info(ticker):
         logger.error(f"yfinance failed for ticker '{ticker}': {e}")
         return ticker, None
 
+
 @lru_cache(maxsize=256)
 def fetch_articles(query):
     try:
@@ -170,54 +179,67 @@ def fetch_articles(query):
         logger.warning(f"NewsAPI get_everything failed for '{query}': {e}")
         return []
 
+
 def parse_published_at(ts):
     if not ts: return None
-    try: return datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone(timezone.utc)
-    except Exception: return None
+    try:
+        return datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone(timezone.utc)
+    except Exception:
+        return None
+
 
 @app.route("/analyze", methods=["GET"])
 def analyze_ticker():
     query = request.args.get("ticker", "").strip()
     if not query: return jsonify({"error": "Ticker or company name required"}), 400
-    
+
     resolved_ticker = resolve_input_to_ticker(query)
-    
+
     if not resolved_ticker:
-        return jsonify({"error": f"Could not find a valid company or ticker for '{query}'. Please try a different name."}), 404
+        return jsonify(
+            {"error": f"Could not find a valid company or ticker for '{query}'. Please try a different name."}), 404
 
     company_name, price_info = get_company_info(resolved_ticker)
     search_queries = f'"{company_name}" OR "{resolved_ticker}"'
     articles = fetch_articles(search_queries)
 
     if not articles:
-        return jsonify({"query": query, "ticker": resolved_ticker, "company_name": company_name, "overall_sentiment": "Neutral", "price": price_info, "articles": []})
+        return jsonify(
+            {"query": query, "ticker": resolved_ticker, "company_name": company_name, "overall_sentiment": "Neutral",
+             "price": price_info, "articles": []})
 
     weighted_votes = {"positive": 0.0, "negative": 0.0, "neutral": 0.0}
     processed_articles = []
-    
+
     for art in articles[:MAX_ARTICLES]:
         text_to_analyze = f"{(art.get('title') or '')}. {(art.get('description') or '')}"
         sentiment_result = sentiment_a(text_to_analyze)[0]
         sentiment = sentiment_result['label'].lower()
         pub_date = parse_published_at(art.get("publishedAt"))
-        age_hours = (datetime.now(timezone.utc) - pub_date).total_seconds() / 3600 if pub_date else 24*7
+        age_hours = (datetime.now(timezone.utc) - pub_date).total_seconds() / 3600 if pub_date else 24 * 7
         weight = 0.5 ** (age_hours / HALF_LIFE_HOURS)
         weighted_votes[sentiment] += weight
-        processed_articles.append({"title": art.get("title"), "url": art.get("url"), "description": art.get("description"), "source": (art.get("source") or {}).get("name"), "sentiment": sentiment, "publishedAt": art.get("publishedAt")})
+        processed_articles.append(
+            {"title": art.get("title"), "url": art.get("url"), "description": art.get("description"),
+             "source": (art.get("source") or {}).get("name"), "sentiment": sentiment,
+             "publishedAt": art.get("publishedAt")})
 
     overall_sentiment = "Neutral"
     if any(weighted_votes.values()):
         overall_sentiment = max(weighted_votes, key=weighted_votes.get).capitalize()
 
-    response = {"query": query, "ticker": resolved_ticker, "company_name": company_name, "overall_sentiment": overall_sentiment, "models_used": loaded_models, "price": price_info, "articles": processed_articles}
+    response = {"query": query, "ticker": resolved_ticker, "company_name": company_name,
+                "overall_sentiment": overall_sentiment, "models_used": loaded_models, "price": price_info,
+                "articles": processed_articles}
     return jsonify(response)
-    
+
+
 @app.route("/impact", methods=["POST"])
 def analyze_impact_on_company():
     payload = request.get_json()
     ticker = payload.get("ticker")
     if not ticker: return jsonify({"error": "Ticker is required for impact analysis."}), 400
-    
+
     company_name, price_info = get_company_info(ticker)
     if not company_name: return jsonify({"error": f"Could not resolve company name for ticker {ticker}."}), 404
 
@@ -226,9 +248,11 @@ def analyze_impact_on_company():
     full_text = f"{title}. {description}"
     sentiment_result = sentiment_a(full_text)[0]
     sentiment = sentiment_result['label'].lower()
-    
-    result = {"impact_on": {"name": company_name, "ticker": ticker}, "sentiment": sentiment, "evidence": [description or title], "key_topics": [], "price": price_info}
+
+    result = {"impact_on": {"name": company_name, "ticker": ticker}, "sentiment": sentiment,
+              "evidence": [description or title], "key_topics": [], "price": price_info}
     return jsonify(result)
+
 
 @app.route("/general_news", methods=["GET"])
 def general_news():
@@ -239,8 +263,10 @@ def general_news():
         logger.exception("Error fetching general news")
         return jsonify({"error": str(e)}), 500
 
+
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=5000)
+
 
 
 
